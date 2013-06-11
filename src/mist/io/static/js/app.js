@@ -47,6 +47,7 @@ define( 'app', [
     'app/controllers/select_images',
     'app/controllers/keys',
     'app/controllers/rules',
+    'app/controllers/zones',    
     'app/views/home',
     'app/views/count',
     'app/views/backend_button',
@@ -75,6 +76,7 @@ define( 'app', [
     'app/views/key_machine_list_item',
     'app/views/rule',
     'app/views/user_menu',
+    'app/views/zone_list',
     'text!app/templates/machine.html',
     'cubism',
     'ember'
@@ -91,6 +93,7 @@ define( 'app', [
                 SelectImagesController,
                 KeysController,
                 RulesController,
+                ZonesController,
                 Home,
                 Count,
                 BackendButton,
@@ -119,6 +122,7 @@ define( 'app', [
                 KeyMachineListItem,
                 RuleView,
                 UserMenuView,
+                ZoneListView,
                 machine_html,
                 cubism
                 ) {
@@ -168,6 +172,11 @@ define( 'app', [
             this.route('key', {
                 path : '/keys/:key_id'
             });
+            this.route('zones');
+            this.route('zone', {
+                path : '/zones/:zone_id'
+            });
+            
         });
         
         App.MachineRoute = Ember.Route.extend({
@@ -217,6 +226,7 @@ define( 'app', [
         App.MachineAddView = MachineAddDialog;
         App.KeyAssociateDialog = KeyAssociateDialog;
         App.MachineKeyListItemView = MachineKeyListItem;
+        App.ZoneListView = ZoneListView;
         
         App.set('backendAddController', BackendAddController.create());
         App.set('backendsController', BackendsController.create());
@@ -227,6 +237,7 @@ define( 'app', [
         App.set('selectImagesController', SelectImagesController.create());
         App.set('keysController', KeysController.create());
         App.set('rulesController', RulesController.create());
+        App.set('zonesController', ZonesController.create());
         App.set('keyAddController', KeyAddController.create());
 
         App.set('authenticated', AUTH || URL_PREFIX == '' ? true : false);
