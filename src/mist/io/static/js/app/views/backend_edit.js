@@ -16,7 +16,6 @@ define('app/views/backend_edit', [
                 $("#edit-backend").popup("close");
             },
 
-
             deleteButtonClick: function(){
                 if (this.getMonitoredMachines().length > 0) {
                     $('#backend-has-monitoring').show()

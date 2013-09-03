@@ -74,6 +74,9 @@ define('app/views/backend_add', [
             },
 
             addButtonClick: function(){
+                $('#add-backend .ajax-loader').show();
+                $('#create-backend-ok').button('disable');
+
                 var that = this;
                 var payload = {
                     "title": '', // TODO
@@ -95,10 +98,14 @@ define('app/views/backend_add', [
                         Mist.backendsController.pushObject(Backend.create(result));
                         info('added backend ' + result.id);
                         Mist.backendAddController.newBackendClear();
+                        $('#add-backend .ajax-loader').hide();
+                        $('#create-backend-ok').button('enable');
                         $("#add-backend").panel("close");
                         $('.select-listmenu li').off('click', this.selectBackend);
                     },
                     error: function(request){
+                        $('#add-backend .ajax-loader').hide();
+                        $('#create-backend-ok').button('enable');
                         Mist.notificationController.notify(request.responseText);
                     }
                 });
