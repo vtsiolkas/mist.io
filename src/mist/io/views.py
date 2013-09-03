@@ -143,6 +143,7 @@ def add_backend(request, renderer='json'):
                'region': region,
                'poll_interval': request.registry.settings['default_poll_interval'],
                'enabled': 1,
+               'starred': provider in EC2_PROVIDERS and EC2_IMAGES[provider].keys() or []
               }
 
     request.registry.settings['backends'][backend_id] = backend
@@ -796,11 +797,26 @@ def list_images(request):
     except:
         return Response('Backend not found', 404)
 
+    backend_id = request.matchdict['backend']
+
+    try:
+        backends = request.environ['beaker.session']['backends']
+    except:
+        backends = request.registry.settings.get('backends', {})
+
     try:
         if conn.type in EC2_PROVIDERS:
-            images = conn.list_images(None, EC2_IMAGES[conn.type].keys())
+            images = conn.list_images(ex_image_ids = backends[backend_id].get('starred', []))
+            my_images = conn.list_images(ex_owner = "self")
+            amazon_images = conn.list_images(ex_owner="amazon")
+            for i in amazon_images+my_images:
+                if i not in images: 
+                    images.append(i)
+                    
             for image in images:
-                image.name = EC2_IMAGES[conn.type][image.id]
+                if not image.name:
+                    image.name = EC2_IMAGES[conn.type].get(image.id, image.id)
+                
         else:
             images = conn.list_images()
     except:
@@ -808,11 +824,45 @@ def list_images(request):
 
     ret = []
     for image in images:
+        if image.id in backends[backend_id].get('starred', []):
+            star = True
+        else:
+            star = False
         ret.append({'id'    : image.id,
                     'extra' : image.extra,
                     'name'  : image.name,
+                    'star'  : star, 
                     })
     return ret
+
+@view_config(route_name='image', request_method='POST', renderer='json')
+def star_image(request):
+    """Toggle image as starred."""
+    try:
+        conn = connect(request)
+    except:
+        return Response('Backend not found', 404)
+
+    backend_id = request.matchdict['backend']
+    image_id = request.matchdict['image']
+
+    try:
+        backends = request.environ['beaker.session']['backends']
+    except:
+        backends = request.registry.settings.get('backends', {})
+    
+    if backends[backend_id].get('starred', None):
+        if image_id in backends[backend_id]['starred']:
+            backends[backend_id]['starred'].remove(image_id)
+        else:
+            backends[backend_id]['starred'].append(image_id)
+    else:
+        backends[backend_id]['starred'] = [image_id]
+        
+    save_settings(request)
+    
+    print "starred!"
+    return {}
 
 
 @view_config(route_name='sizes', request_method='GET', renderer='json')

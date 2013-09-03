@@ -31,10 +31,8 @@
         data-inset="true"
         data-theme="c"
         data-filter-placeholder="Filter images...">
-            {{#each Mist.backendsController}}
-                {{#each images}}
-                    {{view Mist.ImageListItemView imageBinding="this" class="node" }}
-                {{/each}}
+            {{#each Mist.renderedImages}}
+                {{view Mist.ImageListItemView imageBinding="this" class="node" }}
             {{/each}}
         </ul>
 

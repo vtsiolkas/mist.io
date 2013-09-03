@@ -225,9 +225,25 @@ define( 'app', [
           model: function(){
               // set redirect target if the user visits directly the URL
               this.target = 'keys';
-          }
+          } 
         });  
         
+        // we check if we are at the bottom of the page
+        App.isScrolledToBottom = function(){
+            warn('bottom');
+            var distanceToViewportTop = (
+                $(document).height() - $(window).height());
+            var viewPortTop = $(document).scrollTop();
+        
+            if (viewPortTop === 0) {
+                // if we are at the top of the page, don't do
+                // the infinite scroll thing
+                return false;
+            }
+        
+            return (viewPortTop - distanceToViewportTop === 0);
+        };
+          
         App.SingleMachineView = SingleMachineView;
         App.MachineListView = MachineListView
         App.UserMenuView = UserMenuView;
@@ -333,6 +349,8 @@ define( 'app', [
         App.MachineMonitoringDialog = MachineMonitoringDialog;
         App.MachineListView = MachineListView;
 
+        App.set('renderedImages', Ember.ArrayController.create());
+        
         window.Mist = App;
         return App
     }

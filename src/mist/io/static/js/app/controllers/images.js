@@ -43,9 +43,16 @@ define('app/controllers/images', [
                 var that = this;
                 $.getJSON('/backends/' + this.backend.id + '/images', function(data) {
                     var content = new Array();
+                    
+                    that.set('renderIndex', 0);
                     data.forEach(function(item){
                         item.backend = that.backend;
-                        content.push(Image.create(item));
+                        var image = Image.create(item);
+                        content.push(image);
+                        if ((item.star && that.renderIndex < 20) || Mist.renderedImages.content.length < 10) {
+                            Mist.renderedImages.content.push(image);
+                            that.set('renderIndex', content.indexOf(image));
+                        }
                     });
                     that.set('content', content);
                     Mist.backendsController.getImageCount();
@@ -53,6 +60,7 @@ define('app/controllers/images', [
                     if (that.backend.error){
                         that.backend.set('error', false);
                     }
+                    
                 }).error(function() {
                     Mist.notificationController.notify("Error loading images for backend: " + that.backend.title);
                     if (that.backend.error){
