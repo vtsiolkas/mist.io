@@ -9,6 +9,7 @@
     <link type="text/css" href="resources/ui-smoothness/jquery-ui-1.9.1.custom.css" rel="stylesheet" />
     <link rel="stylesheet" href="resources/jquery.mobile-1.3.0.css" />
     <link rel="stylesheet" href="resources/main.css" />
+    <link rel="stylesheet" href="resources/bonito.min.css" />
     <link rel="icon" href="resources/favicon.ico" />
     <link rel="stylesheet" media="all" href=""/>
     <script tal:content="string: var URL_PREFIX='${core_uri}'" />
