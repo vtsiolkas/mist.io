@@ -14,7 +14,6 @@ from Crypto.Util.number import bytes_to_long, long_to_bytes, isPrime
 
 from pyramid.response import Response
 
-from libcloud.compute.types import Provider
 from libcloud.compute.types import NodeState
 from libcloud.compute.providers import get_driver
 from libcloud.compute.base import Node
@@ -202,6 +201,8 @@ def connect(request, backend_id=False):
     elif backend['provider'] == Provider.RACKSPACE:
         conn = driver(backend['apikey'], backend['apisecret'],
                       datacenter=backend['region'])
+    elif backend['provider'] == Provider.SOFTLAYER:
+        conn = driver(backend['apikey'], backend['apisecret'])
     else:
         # ec2
         conn = driver(backend['apikey'], backend['apisecret'])

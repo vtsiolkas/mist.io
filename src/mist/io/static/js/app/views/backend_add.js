@@ -19,7 +19,7 @@ define('app/views/backend_add', [
             },
             
             selectBackend: function(event){
-                if (event.target.title.indexOf("rackspace") !== -1 || event.target.title.indexOf("linode") !== -1)  {
+                if (event.target.title.indexOf("rackspace") !== -1 || event.target.title.indexOf("linode") !== -1 || event.target.title.indexOf("softlayer") !== -1)  {
                     $('#textApiKey').text('2. Username:');
                     $('#textApiSecret').text('3. API Key:');
                     $('#addBackendOpenstack').hide();

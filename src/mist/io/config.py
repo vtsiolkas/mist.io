@@ -71,6 +71,10 @@ SUPPORTED_PROVIDERS = [
                         'provider': Provider.EC2_US_WEST_OREGON,
                         },
 
+                       # Softlayer
+                       {'title': 'SoftLayer',
+                        'provider' : Provider.SOFTLAYER},
+
                        # Linode
                        {'title': 'Linode',
                         'provider' : Provider.LINODE},
