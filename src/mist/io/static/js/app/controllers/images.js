@@ -50,7 +50,7 @@ define('app/controllers/images', [
                         var image = Image.create(item);
                         content.push(image);
                         if ((item.star && that.renderIndex < 20) || Mist.renderedImages.content.length < 10) {
-                            Mist.renderedImages.content.push(image);
+                            Mist.renderedImages.content.unshiftObject(image);
                             that.set('renderIndex', content.indexOf(image));
                         }
                     });

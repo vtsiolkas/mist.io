@@ -25,12 +25,6 @@ define('app/views/image_list_item', [
                         contentType: "application/json",
                         headers: { "cache-control": "no-cache" },
                         dataType: "json",
-                        success: function(result) {
-                            alert('ok');
-                        },
-                        error: function(){
-                            alert('fail');
-                        }
                     });    
                 },
                 

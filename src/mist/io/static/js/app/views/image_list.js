@@ -12,22 +12,24 @@ define('app/views/image_list', [
 	        template: Ember.Handlebars.compile(image_list_html),
 	        init: function(){
 	        	this._super();
-	        	
-	            warn('init images');
-	            $(window).on('scroll', this.didScroll);
-	        },
+	        	var that=this;
+	            Ember.run.next(function(){
+					$('.ui-input-search input').on('keypress', that.filterImages);
+					//add this $('ul#images-list li.node:visible').length	        
+	            });
+	            $(window).on('scroll', this.didScroll);	
+
+			},
 	       
             willDestroyElement: function(){
             	$(window).off('scroll');
+            	//$('.ui-input-search input').off('keypress');
    			},
    			
 						
 			// this is called every time we scroll
 			didScroll: function(){
-				warn('scroscropllll');
-
 			    if (Mist.isScrolledToBottom()) {
-			  	    warn('get more more');
 			  	    var items = Mist.backendsController.content;
 			  	   
 			  	   //We loop through the images of every backend and append 20 at a time 
@@ -41,19 +43,7 @@ define('app/views/image_list', [
 			  	    		}
 			  	    	}
 			  	    }
-			  	    //Mist.renderedImages.content.pushObject(Mist.backendsController.content[0].images.content[300]);
-			  	    //Ember.set('Mist.renderedImages', 0);
-
-			  	    //this.get('controller').send('getMore');
 			    }
-			},
-			getMore: function() {
-			    //don't load new data if we already are
-			    if(this.get('loadingMore')) return;
-			    
-			    this.set('loadingMore', true);
-			    
-			    this.get('target').set('getMore');    
 			},
 			
 			isScrolledToBottom: function() {
@@ -63,15 +53,14 @@ define('app/views/image_list', [
     			return top === distanceToTop;
   			},
   			
-  			loadingMore: function(){
+  			filterImages: function(){
+  				if ($('ul#images-list li.node:visible').length < 5){
+  					warn(7);
+  				}else {
+  					warn(3);
+  				}
   				
-  			},
-			
-			gotMore: function() {
-			    this.set('loadingMore', false);
-			    
-			    
-			}
+  			}
            
         });
     }
