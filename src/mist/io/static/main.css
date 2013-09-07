@@ -1384,6 +1384,19 @@ div.info {
     display:none;
 }
 
+#images .ui-icon-checkbox-off {
+    background-image: url('images/staroff.png');
+    background-position: 0 0;
+    
+}
+
+#images .ui-icon-checkbox-on {
+    background-image: url('images/staron.png');
+    background-position: 0 0;
+    background-color: transparent;
+    
+}
+
 /* Conditional for < 600px */
 @media only screen and  (max-width: 600px) {
     
