@@ -230,7 +230,6 @@ define( 'app', [
         
         // we check if we are at the bottom of the page
         App.isScrolledToBottom = function(){
-            warn('bottom');
             var distanceToViewportTop = (
                 $(document).height() - $(window).height());
             var viewPortTop = $(document).scrollTop();

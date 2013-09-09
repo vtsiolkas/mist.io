@@ -23,11 +23,8 @@ define('app/views/image_list', [
 	       
             willDestroyElement: function(){
             	$(window).off('scroll');
-            	//$('.ui-input-search input').off('keypress');
    			},
-   			
-						
-			// this is called every time we scroll
+   			// this is called every time we scroll
 			didScroll: function(){
 			    if (Mist.isScrolledToBottom()) {
 			  	    var items = Mist.backendsController.content;
@@ -53,13 +50,24 @@ define('app/views/image_list', [
     			return top === distanceToTop;
   			},
   			
+  			//This is called every time we type a search term and makes sure to always have at least 10
+  			//results to choose from if possible
   			filterImages: function(){
-  				if ($('ul#images-list li.node:visible').length < 5){
-  					warn(7);
-  				}else {
-  					warn(3);
+  				if ($('ul#images-list li.node:visible').length < 10) {
+			  	   var items = Mist.backendsController.content;
+			  	   var counter = 0;
+     			   var term = $('.ui-input-search input').val();
+			  	    for (var i = 0; i < items.length; i++) {
+			  	    	for (var j = 0; j < items[i].images.content.length; j ++) {
+			  	    		if(!(items[i].images.content[j].star) &&  Mist.renderedImages.content.indexOf(items[i].images.content[j]) == -1 && counter < 20 && items[i].images.content[j].name.indexOf(term) > -1) {
+			  	    			Mist.renderedImages.pushObject(items[i].images.content[j]);
+			  	    			counter++;
+
+			  	    		}
+			  	    	}
+			  	    }  					
   				}
-  				
+
   			}
            
         });
