@@ -861,8 +861,7 @@ def star_image(request):
         backends[backend_id]['starred'] = [image_id]
         
     save_settings(request)
-    
-    print "starred!"
+
     return {}
 
 

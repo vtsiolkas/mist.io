@@ -1385,7 +1385,7 @@ div.info {
 }
 
 #images .ui-icon-checkbox-off {
-    background-image: url('images/staroff.png');
+    background-image: url("images/bg_splash.gif");
     background-position: 0 0;
     
 }
