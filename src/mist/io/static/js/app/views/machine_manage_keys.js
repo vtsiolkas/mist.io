@@ -22,15 +22,15 @@ define('app/views/machine_manage_keys', [
             
             didInsertElement: function() {
                 var machine = this.get('controller').get('model'), that=this;
-                for (var i=0; i < machine.keys.content.length; i++){
-                    for (var j=0; j<machine.keys.content[i].machines.length; j++){
+                for (var i=0; i < machine.keys.content.length; i++) {
+                    for (var j=0; j < machine.keys.content[i].machines.length; j++) {
                         var item = machine.keys.content[i].machines[j];
                         machine.keys.content[i].set('probed', null);
                         if (item[1] == machine.id && item[0] == machine.backend.id && item[2] > 0) {
                             machine.keys.content[i].set('probed', true);
-                        } else if (item[1] == machine.id && item[0] == machine.backend.id && item[2] < 0){
+                        } else if (item[1] == machine.id && item[0] == machine.backend.id && item[2] < 0) {
                             machine.keys.content[i].set('probed', false);
-                        }                        
+                        }
                     }
                 }
             },
@@ -67,13 +67,13 @@ define('app/views/machine_manage_keys', [
                                                              You will not be able to login through mist.io. Are you sure you want to do this?');
                     Mist.confirmationController.set('callback', function() {
                         $('#manage-keys .ajax-loader').fadeIn(200);
-                        Mist.keysController.disassociateKey(that.selectedKey, machine);      
+                        Mist.keysController.disassociateKey(that.selectedKey, machine);
                     });
                     Mist.confirmationController.show();
                 } else {
                     $('#manage-keys .ajax-loader').fadeIn(200);
                     Mist.keysController.disassociateKey(that.selectedKey, machine); 
-                }         
+                }
             },
             
             actionUploadClicked: function() {

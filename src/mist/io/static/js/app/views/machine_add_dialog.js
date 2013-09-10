@@ -167,7 +167,7 @@ define('app/views/machine_add_dialog', [
                 $('.dialog-add .ajax-loader').show();
                 var payload = {
                     'action': 'generate'
-                }
+                };
                 $.ajax({
                     url: '/keys',
                     type: "POST",

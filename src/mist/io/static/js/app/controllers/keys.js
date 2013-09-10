@@ -202,15 +202,16 @@ define('app/controllers/keys', [
                     contentType: 'application/json',
                     data: JSON.stringify(payload),
                     success: function(data) {
-                        info('Successfully associated key ', key_name);
-                        key.set('probed', false);
-                        machine.keys.addObject(key);
                         $('#manage-keys .ajax-loader').fadeOut(200);
-                        setTimeout(function(){
-                            $('#associated-keys').listview('refresh');
+                        info('Successfully associated key ', key_name);
+                        machine.keys.addObject(key);
+                        machine.probe(key_name);
+                        Ember.run.next(function(){
+                            key.set('probed', false);
                             $('.key-icon-wrapper').trigger('create');
                             $('#associated-keys').parent().trigger('create');
-                        }, 100); 
+                            $('#associated-keys').listview('refresh');
+                        });
                     },
                     error: function(jqXHR, textstate, errorThrown) {
                         $('#manage-keys .ajax-loader').fadeOut(200);

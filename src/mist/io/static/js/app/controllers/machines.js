@@ -179,7 +179,7 @@ define('app/controllers/machines', [
                     $('#machines-list input.ember-checkbox').checkboxradio();    
                 });
                 var that = this;
-
+                var key = key;
                 $.ajax({
                     url: 'backends/' + this.backend.id + '/machines',
                     type: 'POST',
@@ -192,7 +192,7 @@ define('app/controllers/machines', [
                         warn(data);
                         if (that.backend.error) {
                             that.backend.set('error', false);
-                        }     
+                        }
                         machine.set("id", data.id);
                         machine.set("name", data.name);
                         machine.set("public_ips", data.public_ips);
@@ -200,6 +200,7 @@ define('app/controllers/machines', [
                         machine.set("extra", data.extra);
                         that.backend.set('create_pending', false);
                         key.machines.addObject([that.backend.id, data.id]);
+                        machine.probe(key.name);
                     },
                     error: function(jqXHR, textstate, errorThrown) {
                         Mist.notificationController.notify('Error while sending create machine' +
@@ -208,7 +209,6 @@ define('app/controllers/machines', [
                         that.removeObject(machine);
                         that.backend.set('error', textstate);
                         that.backend.set('create_pending', false);
-
                     }
                 });
             }
