@@ -15,21 +15,21 @@ define('app/views/backend_add', [
             template: Ember.Handlebars.compile(backend_add_html),
 
             init: function() {
-                this._super();         
+                this._super();
             },
             
-            selectBackend: function(event){
-                if (event.target.title.indexOf("rackspace") !== -1 || event.target.title.indexOf("linode") !== -1)  {
-                    $('#textApiKey').text('2. Username:');
-                    $('#textApiSecret').text('3. API Key:');
+            selectBackend: function(event) {
+                if (event.target.title.indexOf("rackspace") != -1 || event.target.title.indexOf("linode") != -1) {
+                    $('#ApiKeylabel').text('2. Username:');
+                    $('#ApiSecretlabel').text('3. API Key:');
                     $('#addBackendOpenstack').hide();
-                } else if (event.target.title.indexOf("openstack") !== -1) {
-                    $('#textApiKey').text('2. Username:');
-                    $('#textApiSecret').text('3. Password:');
+                } else if (event.target.title.indexOf("openstack") != -1) {
+                    $('#ApiKeylabel').text('2. Username:');
+                    $('#ApiSecretlabel').text('3. Password:');
                     $('#addBackendOpenstack').show();
                 } else {
-                    $('#textApiKey').text('2. API Key:');
-                    $('#textApiSecret').text('3. API Secret:');
+                    $('#ApiKeylabel').text('2. API Key:');
+                    $('#ApiSecretlabel').text('3. API Secret:');
                     $('#addBackendOpenstack').hide();
                 }
                 $('.select-backend-collapsible').collapsible('option','collapsedIcon','check');
@@ -40,48 +40,48 @@ define('app/views/backend_add', [
                     }
                 );
                 $('.select-backend-collapsible').trigger('collapse');
-
-                $('input[id=create-backend-key]').val('');
-                $('input[id=create-backend-secret]').val('');
+                
+                Mist.backendAddController.set('newBackendKey', '');
+                Mist.backendAddController.set('newBackendSecret', '');
+                //Mist.backendAddController.set('newBackendUrl', '');
+                //Mist.backendAddController.set('newBackendTenant', '');
                 for (var b = 0; b < Mist.backendsController.content.length; b++) {
                     var backend = Mist.backendsController.content[b];
                     if (event.target.title.split('_')[0] == 'ec2' && backend.provider.split('_')[0] == 'ec2') {
                         //Autocomplete
-                        $('input[id=create-backend-key]').val(backend.apikey);
-                        $('input[id=create-backend-secret]').val('getsecretfromdb');
-                        $('#create-backend-ok').button('enable');
+                        Mist.backendAddController.set('newBackendKey', backend.apikey);
+                        Mist.backendAddController.set('newBackendSecret', 'getsecretfromdb');
                         break;
                     } else if (event.target.title.substr(0,9) == 'rackspace' && backend.provider.substr(0,9) == 'rackspace') {
-                        $('input[id=create-backend-key]').val(backend.apikey);
-                        $('input[id=create-backend-secret]').val('getsecretfromdb');
-                        $('#create-backend-ok').button('enable');
+                        Mist.backendAddController.set('newBackendKey', backend.apikey);
+                        Mist.backendAddController.set('newBackendSecret', 'getsecretfromdb');
                         break;
                     }
                 }
             },
             
             addBackend: function() {
-                $('.select-listmenu li').on('click', this.selectBackend);                
+                $('.select-listmenu li').on('click', this.selectBackend);              
                 $('#add-backend').panel('open');
                 // resize dismiss div TODO: reset on window resize                
-                $('.ui-panel-dismiss-position-right').css('left',(0-$('.ui-panel-position-right.ui-panel-open').width()));
+                //$('.ui-panel-dismiss-position-right').css('left',(0-$('.ui-panel-position-right.ui-panel-open').width()));
             },
 
             backClicked: function() {
-                Mist.backendAddController.newBackendClear();
-                $('.select-listmenu li').off('click', this.selectBackend);
                 $("#add-backend").panel("close");
+                $('.select-listmenu li').off('click', this.selectBackend);
+                Mist.backendAddController.newBackendClear();  
             },
 
             addButtonClick: function(){
                 var that = this;
                 var payload = {
-                    "title": '', // TODO
-                    "provider": Mist.backendAddController.newBackendProvider,
-                    "apikey" : $('#create-backend-key').val(),
-                    "apisecret": $('#create-backend-secret').val(),
-                    "apiurl": $('#create-backend-url').val(),
-                    "tenant_name": $('#create-backend-tenant').val()
+                    "title": Mist.backendAddController.newBackendProvider.title,
+                    "provider": Mist.backendAddController.newBackendProvider.provider,
+                    "apikey" : Mist.backendAddController.newBackendKey,
+                    "apisecret": Mist.backendAddController.newBackendSecret,
+                    "apiurl": Mist.backendAddController.newBackendUrl,
+                    "tenant_name": Mist.backendAddController.newBackendTenant
                 };
 
                 $.ajax({
@@ -91,14 +91,12 @@ define('app/views/backend_add', [
                     dataType: "json",
                     headers: { "cache-control": "no-cache" },
                     data: JSON.stringify(payload),
-                    success: function(result) {
-                        Mist.backendsController.pushObject(Backend.create(result));
-                        info('added backend ' + result.id);
-                        Mist.backendAddController.newBackendClear();
-                        $("#add-backend").panel("close");
-                        $('.select-listmenu li').off('click', this.selectBackend);
+                    success: function(data) {
+                        Mist.backendsController.pushObject(Backend.create(data));
+                        info('added backend ' + data.id);
+                        that.backClicked();
                     },
-                    error: function(request){
+                    error: function(request) {
                         Mist.notificationController.notify(request.responseText);
                     }
                 });

@@ -2,7 +2,7 @@ define('app/controllers/backend_add', [
     'ember'
     ],
     /**
-     * Backend add controller
+     * Backend Add Controller
      *
      * @returns Class
      */
@@ -12,30 +12,23 @@ define('app/controllers/backend_add', [
             newBackendReady: false,
 
             newBackendClear: function() {
-                log("new backend clear");
                 this.set('newBackendProvider', null);
                 this.set('newBackendKey', null);
                 this.set('newBackendSecret', null);
                 this.set('newBackendURL', null);
-                Ember.run.next(function(){
-                    $('#create-select-provider').selectmenu('refresh');
-                });
+                this.set('newBackendTenant', null);
+                $('.select-backend-collapsible span.ui-btn-text').text('Select backend');
             },
 
             updateNewBackendReady: function() {
-
                 if (this.get('newBackendProvider') &&
                     this.get('newBackendKey') &&
                     this.get('newBackendSecret')) {
                         this.set('newBackendReady', true);
-                        if('button' in $('#create-backend-ok')){
-                            $('#create-backend-ok').button('enable');
-                        }
+                        $('#create-backend-ok').button('enable');
                 } else {
                     this.set('newBackendReady', false);
-                    if('button' in $('#create-backend-ok')){
-                        $('#create-backend-ok').button('disable');
-                    }
+                    $('#create-backend-ok').button('disable');
                 }
             },
 

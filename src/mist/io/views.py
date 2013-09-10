@@ -166,21 +166,28 @@ def list_backends(request):
    
 @view_config(route_name='backends', request_method='POST', renderer='json')
 def add_backend(request, renderer='json'):
+    """Adds a new backend.
+    
+    """
     try:
         backends = request.environ['beaker.session']['backends']
     except:
         backends = request.registry.settings['backends']
+        
     params = request.json_body
-    provider = params.get('provider', '0')['provider']
+    title = params.get('title', '0')
+    provider = params.get('provider', '0')
     apikey = params.get('apikey', '')
     apisecret = params.get('apisecret', '')
     apiurl = params.get('apiurl', '')
     tenant_name = params.get('tenant_name', '')
+    
     if apisecret == 'getsecretfromdb':
         for backend_id in backends:
             backend = backends[backend_id]
             if backend.get('apikey', None) == apikey:
                 apisecret = backend.get('apisecret', None)
+                
     region = ''
     if not provider.__class__ is int and ':' in provider:
         region = provider.split(':')[1]
@@ -194,7 +201,7 @@ def add_backend(request, renderer='json'):
     if backend_id in backends:
         return Response('Backend exists', 409)
 
-    backend = {'title': params.get('provider', '0')['title'],
+    backend = {'title': title,
                'provider': provider,
                'apikey': apikey,
                'apisecret': apisecret,
@@ -219,6 +226,7 @@ def add_backend(request, renderer='json'):
            'status'       : 'off',
            'enabled'      : 1,
           }
+    
     return ret
 
 
@@ -235,6 +243,18 @@ def delete_backend(request, renderer='json'):
     save_settings(request)
 
     return Response('OK', 200)
+
+
+@view_config(route_name='backend_action', request_method='POST', request_param="action=toggle", renderer='json')
+def toggle_backend(request):
+    
+    backend_id = request.matchdict['backend']
+    state = request.registry.settings['backends'][backend_id]['enabled']
+    request.registry.settings['backends'][backend_id]['enabled'] = not state
+    
+    save_settings(request)
+    
+    return {'state': not state,}
 
 
 @view_config(route_name='machines', request_method='GET', renderer='json')
