@@ -172,14 +172,13 @@ define('app/controllers/machines', [
                 item.id = -1;
 
                 var machine = Machine.create(item);
-                machine.keys.addObject(key);
                 
                 this.addObject(machine);
                 Ember.run.next(function(){
                     $('#machines-list input.ember-checkbox').checkboxradio();    
                 });
                 var that = this;
-
+                var key = key;
                 $.ajax({
                     url: 'backends/' + this.backend.id + '/machines',
                     type: 'POST',
@@ -199,7 +198,7 @@ define('app/controllers/machines', [
                         machine.set("private_ips", data.private_ips);
                         machine.set("extra", data.extra);
                         that.backend.set('create_pending', false);
-                        key.machines.addObject([that.backend.id, data.id]);
+                        Mist.keysController.associateKey(key.name, machine);
                     },
                     error: function(jqXHR, textstate, errorThrown) {
                         Mist.notificationController.timeNotify(jqXHR.responseText, 20000);
@@ -207,7 +206,6 @@ define('app/controllers/machines', [
                         that.removeObject(machine);
                         that.backend.set('error', textstate);
                         that.backend.set('create_pending', false);
-
                     }
                 });
             }
