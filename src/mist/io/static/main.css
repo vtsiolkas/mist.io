@@ -458,6 +458,11 @@ a#mist-select-machines-button span.ui-btn-text {
     left: -26px;
 }
 
+.machine-size-info {
+    color: rgb(170,170,170);
+    font-size: 80%
+}
+
 .ui-listview > .ui-li.ui-last-child, .ui-listview .ui-btn.ui-last-child > .ui-li > .ui-btn-text > .ui-link-inherit, .ui-collapsible-content > .ui-listview:not(.ui-listview-inset), .ui-collapsible-content > .ui-listview:not(.ui-listview-inset) .ui-li.ui-last-child, .ui-collapsible-heading {
     z-index: 1000;
 }
