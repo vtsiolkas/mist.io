@@ -26,21 +26,41 @@ define('app/views/image_list', [
    			},
    			// this is called every time we scroll
 			didScroll: function(){
-			    if (Mist.isScrolledToBottom()) {
-			  	    var items = Mist.backendsController.content;
-			  	   
-			  	   //We loop through the images of every backend and append 20 at a time 
+			/**
+			 * If the search field is empty we load the next 20 random images,
+			 * if it contains a string we append the next 20 who have the string 
+			 * in the name of the image
+			 */
+				if ($('.ui-input-search input').val() == ""){
+				    if (Mist.isScrolledToBottom()) {
+				  	    var items = Mist.backendsController.content;
+				  	   
+				  	   //We loop through the images of every backend and append 20 at a time 
+				  	   var counter = 0;
+				  	    for (var i = 0; i < items.length; i++) {
+				  	    	for (var j = 0; j < items[i].images.content.length; j ++) {
+				  	    		if(!(items[i].images.content[j].star) &&  Mist.renderedImages.content.indexOf(items[i].images.content[j]) == -1 && counter < 20) {
+				  	    			Mist.renderedImages.pushObject(items[i].images.content[j]);
+				  	    			counter++;
+	
+				  	    		}
+				  	    	}
+				  	    }
+				    }
+			   }else {
+			  	   var items = Mist.backendsController.content;
 			  	   var counter = 0;
+     			   var term = $('.ui-input-search input').val();
 			  	    for (var i = 0; i < items.length; i++) {
 			  	    	for (var j = 0; j < items[i].images.content.length; j ++) {
-			  	    		if(!(items[i].images.content[j].star) &&  Mist.renderedImages.content.indexOf(items[i].images.content[j]) == -1 && counter < 20) {
+			  	    		if(!(items[i].images.content[j].star) &&  Mist.renderedImages.content.indexOf(items[i].images.content[j]) == -1 && counter < 20 && items[i].images.content[j].name.indexOf(term) > -1) {
 			  	    			Mist.renderedImages.pushObject(items[i].images.content[j]);
 			  	    			counter++;
 
 			  	    		}
 			  	    	}
 			  	    }
-			    }
+		   }
 			},
 			
 			isScrolledToBottom: function() {
