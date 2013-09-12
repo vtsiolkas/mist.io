@@ -452,6 +452,48 @@ def create_machine(request):
             os.remove(tmp_key_path)
         except:
             pass
+    elif conn.type is Provider.DIGITAL_OCEAN and public_key and private_key:
+        """
+        Adding public key to user's DigitalOcean account, which associates
+        a unique numeric id to the key.
+        Then we can create a machine which contains the key, by passing
+        that numeric id to deploy_node.
+        There seems to be no limit to the number of keys, or any problem with
+        duplicate key names so we simply add a key to the account in
+        DigitalOcean for each machine we create, even if it's already
+        there(it will get a different numeric id).
+        
+        Alternatively, we could check if the public_key is already in our
+        DigitalOcean account and use that numeric id, but that needs one
+        request per key checked
+        """
+        account_ssh_key = conn.ex_create_ssh_key(key_id, public_key)
+
+        (tmp_key, tmp_key_path) = tempfile.mkstemp()
+        key_fd = os.fdopen(tmp_key, 'w+b')
+        key_fd.write(private_key)
+        key_fd.close()
+
+        deploy_script = ScriptDeployment(script)
+
+        try:
+            node = conn.deploy_node(name=machine_name,
+                             image=image,
+                             size=size,
+                             deploy=deploy_script,
+                             location=location,
+                             ex_ssh_key_ids = [str(account_ssh_key.id)],
+                             ssh_key=tmp_key_path)
+            # Pass deploy=False to associate_key because the ssh key is already
+            # deployed(internally by DigitalOcean) on the machine.
+            associate_key(request, key_id, backend_id, node.id, deploy=False)
+        except Exception as e:
+            return Response('Failed to create machine in Digital Ocean: %s' % e, 500)
+        #remove temp file with private key
+        try:
+            os.remove(tmp_key_path)
+        except:
+            pass
     else:
         return Response('Cannot create a machine without a keypair', 400)
 

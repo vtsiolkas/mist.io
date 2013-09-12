@@ -99,6 +99,11 @@ SUPPORTED_PROVIDERS = [
                        {'title': 'Rackspace AU',
                         'provider' : "%s:%s" % (Provider.RACKSPACE,'syd')
                         },
+
+                       # Digital Ocean
+                       {'title': 'Digital Ocean',
+                        'provider': "%s:%s" % (Provider.DIGITAL_OCEAN,'glo')
+                        },
                        ]
 
 # Base AMIs
